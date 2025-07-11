@@ -1,11 +1,10 @@
-yml file content:
 services:
   db:
     container_name: postgres-spring-boot
     image: postgres:latest
     environment:
-      POSTGRES_USER: amigoscode
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Evergreen!@1992
       PGDATA: /data/postgres
     volumes:
       - db:/data/postgres
