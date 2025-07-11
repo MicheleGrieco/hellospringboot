@@ -2,9 +2,15 @@ package com.example.hellospringboot;
 
 import java.util.Objects;
 
+import org.springframework.data.annotation.Id;
+
+import jakarta.persistence.Entity;
+
+@Entity
 public class SoftwareEngineer {
 
     /** The unique identifier for the software engineer. */
+    @Id
     private Integer id;
     /** The name of the software engineer. */
     private String name;
