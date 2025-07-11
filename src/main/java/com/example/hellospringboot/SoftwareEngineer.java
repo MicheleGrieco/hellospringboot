@@ -2,9 +2,8 @@ package com.example.hellospringboot;
 
 import java.util.Objects;
 
-import org.springframework.data.annotation.Id;
-
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity
 public class SoftwareEngineer {
