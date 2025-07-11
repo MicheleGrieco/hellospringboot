@@ -4,7 +4,7 @@ services:
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Evergreen!@1992
+      POSTGRES_PASSWORD: password123
       PGDATA: /data/postgres
     volumes:
       - db:/data/postgres
