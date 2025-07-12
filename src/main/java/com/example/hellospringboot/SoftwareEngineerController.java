@@ -12,8 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/software-engineers")
 public class SoftwareEngineerController {
     
+    /** Service to handle software engineer operations */
     private final SoftwareEngineerService softwareEngineerService;
     
+    /**
+     * Constructor for SoftwareEngineerController.
+     * 
+     * @param softwareEngineerService
+     */
     public SoftwareEngineerController(SoftwareEngineerService softwareEngineerService) {
         this.softwareEngineerService = softwareEngineerService;
     }
@@ -29,6 +35,11 @@ public class SoftwareEngineerController {
     }
 
     @PostMapping
+    /**
+     * Adds a new software engineer.
+     * 
+     * @param softwareEngineer the SoftwareEngineer object to be added
+     */
     public void addNewSoftwareEngineer(
         @RequestBody SoftwareEngineer softwareEngineer) {
         softwareEngineerService.insertSoftwareEngineer(softwareEngineer);
