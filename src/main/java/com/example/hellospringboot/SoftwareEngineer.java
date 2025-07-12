@@ -3,6 +3,8 @@ package com.example.hellospringboot;
 import java.util.Objects;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
@@ -10,6 +12,7 @@ public class SoftwareEngineer {
 
     /** The unique identifier for the software engineer. */
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     /** The name of the software engineer. */
     private String name;
