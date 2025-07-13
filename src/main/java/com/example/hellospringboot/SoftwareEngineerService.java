@@ -57,4 +57,20 @@ public class SoftwareEngineerService {
         }
         softwareEngineerRepository.deleteById(id);
     }
+
+    /**
+     * Updates an existing software engineer.
+     * 
+     * @param id the ID of the software engineer to be updated
+     * @param update the updated SoftwareEngineer object
+     */
+    public void updateSoftwareEngineer(Integer id, SoftwareEngineer update) {
+        SoftwareEngineer softwareEngineer = softwareEngineerRepository.findById(id)
+        .orElseThrow(() -> new IllegalStateException(
+            id + " not found"
+        ));
+        softwareEngineer.setName(update.getName());
+        softwareEngineer.setTechStack(update.getTechStack());
+        softwareEngineerRepository.save(softwareEngineer);
+    }
 }
