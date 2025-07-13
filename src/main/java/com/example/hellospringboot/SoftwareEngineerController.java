@@ -2,6 +2,7 @@ package com.example.hellospringboot;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ public class SoftwareEngineerController {
     /**
      * Constructor for SoftwareEngineerController.
      * 
-     * @param softwareEngineerService
+     * @param softwareEngineerService the service to manage software engineers
      */
     public SoftwareEngineerController(SoftwareEngineerService softwareEngineerService) {
         this.softwareEngineerService = softwareEngineerService;
@@ -36,6 +37,12 @@ public class SoftwareEngineerController {
     }
 
     @GetMapping("{id}")
+    /**
+     * Retrieves a software engineer by ID.
+     * 
+     * @param id the ID of the software engineer
+     * @return the SoftwareEngineer object with the specified ID
+     */
     public SoftwareEngineer getEngineerById(@PathVariable Integer id) {
             return softwareEngineerService.getSoftwareEngineerById(id);
     }
@@ -49,5 +56,15 @@ public class SoftwareEngineerController {
     public void addNewSoftwareEngineer(
         @RequestBody SoftwareEngineer softwareEngineer) {
         softwareEngineerService.insertSoftwareEngineer(softwareEngineer);
+    }
+
+    @DeleteMapping("{id}")
+    /**
+     * Deletes a software engineer by ID.
+     * 
+     * @param id the ID of the software engineer to be deleted
+     */
+    public void deleteSoftwareEngineer(@PathVariable Integer id) {
+        softwareEngineerService.deleteSoftwareEngineer(id);
     }
 }

@@ -35,7 +35,26 @@ public class SoftwareEngineerService {
         softwareEngineerRepository.save(softwareEngineer);
     }
 
+    /**
+     * Retrieves a software engineer by ID.
+     * 
+     * @param id the ID of the software engineer
+     * @return the SoftwareEngineer object with the specified ID
+     */
     public SoftwareEngineer getSoftwareEngineerById(Integer id) {
         return softwareEngineerRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+    }
+
+    /**
+     * Deletes a software engineer by ID.
+     * 
+     * @param id the ID of the software engineer to be deleted
+     */
+    public void deleteSoftwareEngineer(Integer id) {
+        boolean exists = softwareEngineerRepository.existsById(id);
+        if(!exists) {
+            throw new IllegalStateException(id + " not found");
+        }
+        softwareEngineerRepository.deleteById(id);
     }
 }
