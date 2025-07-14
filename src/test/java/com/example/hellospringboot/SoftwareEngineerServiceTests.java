@@ -1,5 +1,12 @@
 package com.example.hellospringboot;
 
+import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,7 +34,12 @@ public class SoftwareEngineerServiceTests {
 
     @Test
     public void getAllSoftwareEngineersTest() {
-        // This test will check if the context loads correctly for SoftwareEngineerService
+        SoftwareEngineer se1 = new SoftwareEngineer(1, "Alice", "Java", null);
+        SoftwareEngineer se2 = new SoftwareEngineer(2, "Bob", "Python", null);
+        when(softwareEngineerRepository.findAll()).thenReturn(Arrays.asList(se1, se2));
+        List<SoftwareEngineer> result = softwareEngineerService.getAllSoftwareEngineers();
+        assertThat(result).hasSize(2).contains(se1, se2);
+        verify(softwareEngineerRepository).findAll();
     }
 
     @Test
