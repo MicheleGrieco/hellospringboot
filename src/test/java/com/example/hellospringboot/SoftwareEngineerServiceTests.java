@@ -2,16 +2,17 @@ package com.example.hellospringboot;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.InjectMocks;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -29,6 +30,7 @@ public class SoftwareEngineerServiceTests {
     private SoftwareEngineerService softwareEngineerService;
     
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
@@ -58,7 +60,13 @@ public class SoftwareEngineerServiceTests {
 
     @Test
     public void getSoftwareEngineerByIdTest() {
-        // This test will check if a software engineer can be retrieved by ID
+        SoftwareEngineer se = new SoftwareEngineer(1, "Alice", "Java", null);
+        when(softwareEngineerRepository.findById(1)).thenReturn(Optional.of(se));
+
+        SoftwareEngineer result = softwareEngineerService.getSoftwareEngineerById(1);
+
+        assertThat(result).isEqualTo(se);
+        verify(softwareEngineerRepository).findById(1);
     }
 
     @Test
