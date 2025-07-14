@@ -4,15 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.InjectMocks;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -71,7 +71,9 @@ public class SoftwareEngineerServiceTests {
 
     @Test
     public void deleteSoftwareEngineerByIdTest() {
-        // This test will check if a software engineer can be deleted by ID
+        when(softwareEngineerRepository.existsById(1)).thenReturn(true);
+        softwareEngineerService.deleteSoftwareEngineer(1);
+        verify(softwareEngineerRepository).deleteById(1);
     }
 
     @Test
