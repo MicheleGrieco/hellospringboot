@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.InjectMocks;
@@ -15,11 +16,10 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class SoftwareEngineerServiceTests {
-
 
     @Mock
     private SoftwareEngineerRepository softwareEngineerRepository;
@@ -109,10 +109,11 @@ public class SoftwareEngineerServiceTests {
         when(softwareEngineerRepository.existsById(99)).thenReturn(false);
 
         assertThrows(
-            RuntimeException.class,
+            
+        RuntimeException.class,
             () -> softwareEngineerService.deleteSoftwareEngineer(99)
         );
-        verify(softwareEngineerRepository).findById(99);
+        verify(softwareEngineerRepository).existsById(99);
     }
 
     @Test

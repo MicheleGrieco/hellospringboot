@@ -53,7 +53,8 @@ public class SoftwareEngineerService {
      * @return the SoftwareEngineer object with the specified ID
      */
     public SoftwareEngineer getSoftwareEngineerById(Integer id) {
-        return softwareEngineerRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        return softwareEngineerRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Software engineer with " + id + " not found"));
     }
 
     /**
@@ -64,7 +65,7 @@ public class SoftwareEngineerService {
     public void deleteSoftwareEngineer(Integer id) {
         boolean exists = softwareEngineerRepository.existsById(id);
         if(!exists) {
-            throw new IllegalStateException(id + " not found");
+            throw new RuntimeException("Software engineer with " + id + " not found");
         }
         softwareEngineerRepository.deleteById(id);
     }
@@ -77,8 +78,8 @@ public class SoftwareEngineerService {
      */
     public void updateSoftwareEngineer(Integer id, SoftwareEngineer update) {
         SoftwareEngineer softwareEngineer = softwareEngineerRepository.findById(id)
-        .orElseThrow(() -> new IllegalStateException(
-            id + " not found"
+        .orElseThrow(() -> new RuntimeException(
+            "Software engineer with " + id + " not found"
         ));
         softwareEngineer.setName(update.getName());
         softwareEngineer.setTechStack(update.getTechStack());
