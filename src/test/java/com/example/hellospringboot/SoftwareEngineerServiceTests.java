@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -78,6 +79,52 @@ public class SoftwareEngineerServiceTests {
 
     @Test
     public void updateSoftwareEngineerTest() {
-        // This test will check if a software engineer can be updated correctly
+        SoftwareEngineer existing = new SoftwareEngineer(1, "Alice", "Java", null);
+        SoftwareEngineer update = new SoftwareEngineer(2, "Alice Updated", "Kotlin", null);
+        when(softwareEngineerRepository.findById(1)).thenReturn(Optional.of(existing));
+        when(softwareEngineerRepository.save(any(SoftwareEngineer.class))).thenReturn(existing);
+
+        softwareEngineerService.updateSoftwareEngineer(1, update);
+
+        assertThat(existing.getName()).isEqualTo("Alice Updated");
+        assertThat(existing.getTechStack()).isEqualTo("Kotlin");
+        verify(softwareEngineerRepository).save(existing);
+    }
+
+    @Test
+    @SuppressWarnings("")
+    public void getSoftwareEngineerById_NotFoundTest() {
+        when(softwareEngineerRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(
+            RuntimeException.class,
+            () -> softwareEngineerService.getSoftwareEngineerById(99)
+        );
+        verify(softwareEngineerRepository).findById(99);
+    }
+
+    @Test
+    @SuppressWarnings("")
+    public void deleteSoftwareEngineerById_NotFoundTest() {
+        when(softwareEngineerRepository.existsById(99)).thenReturn(false);
+
+        assertThrows(
+            RuntimeException.class,
+            () -> softwareEngineerService.deleteSoftwareEngineer(99)
+        );
+        verify(softwareEngineerRepository).findById(99);
+    }
+
+    @Test
+    @SuppressWarnings("")
+    public void updateSoftwareEngineer_NotFoundTest() {
+        SoftwareEngineer update = new SoftwareEngineer(null, "Not Found", "Go", null);
+        when(softwareEngineerRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(
+            RuntimeException.class,
+            () -> softwareEngineerService.updateSoftwareEngineer(99, update)
+        );
+        verify(softwareEngineerRepository).findById(99);
     }
 }
