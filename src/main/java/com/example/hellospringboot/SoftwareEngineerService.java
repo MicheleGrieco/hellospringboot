@@ -7,14 +7,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class SoftwareEngineerService {
     private final SoftwareEngineerRepository softwareEngineerRepository;
+    private final AIService aiService;
 
     /**
      * Constructor for SoftwareEngineerService.
      * 
      * @param softwareEngineerRepository
      */
-    public SoftwareEngineerService(SoftwareEngineerRepository softwareEngineerRepository) {
+    public SoftwareEngineerService(SoftwareEngineerRepository softwareEngineerRepository, AIService aiService) {
         this.softwareEngineerRepository = softwareEngineerRepository;
+        this.aiService = aiService;
     }
 
     /**
@@ -32,6 +34,15 @@ public class SoftwareEngineerService {
      * @param softwareEngineer the SoftwareEngineer object to be added
      */
     public void insertSoftwareEngineer(SoftwareEngineer softwareEngineer) {
+        String prompt = """
+            Based on the programming tech stack %s that %s has given
+            Provide a full learning path and recommendations for this person.
+            """.formatted(
+                softwareEngineer.getTechStack(),
+                softwareEngineer.getName()
+        );
+        String chatRes = aiService.chat(prompt);
+        softwareEngineer.setLearningPathRecommendation(chatRes);
         softwareEngineerRepository.save(softwareEngineer);
     }
 
