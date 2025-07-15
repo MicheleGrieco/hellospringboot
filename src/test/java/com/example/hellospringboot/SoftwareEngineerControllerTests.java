@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -106,5 +107,43 @@ class SoftwareEngineerControllerTests {
                 .andExpect(jsonPath("$.learningPathRecommendation", is("Focus on microservices architecture")));
 
         verify(softwareEngineerService, times(1)).getSoftwareEngineerById(1);
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/software-engineers/{id} - Should return 404 when engineer not found")
+    void getEngineerById_ShouldReturn404WhenNotFound() throws Exception {
+        // TODO
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/software-engineers - Should create new engineer")
+    void addNewSoftwareEngineer_ShouldCreateEngineer() throws Exception {
+        // Given
+        SoftwareEngineer newEngineer = new SoftwareEngineer();
+        newEngineer.setName("Anna Bianchi");
+        newEngineer.setTechStack("Python, Django, PostgreSQL");
+
+        // When & Then
+        mockMvc.perform(post("/api/v1/software-engineers")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(newEngineer)))
+            .andExpect(status().isOk());
+
+        verify(softwareEngineerService, times(1)).insertSoftwareEngineer(any(SoftwareEngineer.class));
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/software-engineers - Should handle invalid JSON")
+    void addNewSoftwareEngineer_ShouldHandleInvalidJson() throws Exception {
+        // Given
+        String invalidJson = "{ \"name\": \"Mario Rossi\", \"techStack\": }";
+
+        // When & Then
+        mockMvc.perform(post("/api/v1/software-engineers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(invalidJson))
+                .andExpect(status().isBadRequest());
+
+        verify(softwareEngineerService, never()).insertSoftwareEngineer(any());
     }
 }
