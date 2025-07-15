@@ -217,8 +217,6 @@ public class SoftwareEngineerServiceTests {
       verify(softwareEngineerRepository,times(1)).save(testEngineer);
     }
 
-    // TODO
-
     @Test
     void updateSoftwareEngineerTest_NotFound() {
         // Given
