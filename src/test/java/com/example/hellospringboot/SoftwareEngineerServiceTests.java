@@ -3,14 +3,18 @@ package com.example.hellospringboot;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,7 +30,7 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class SoftwareEngineerServiceTests {
+class SoftwareEngineerServiceTests {
 
     @Mock
     private SoftwareEngineerRepository softwareEngineerRepository;
@@ -49,6 +53,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Should retrieve a list of software engineers")
     void getAllSoftwareEngineersTest() {
         // Given
         SoftwareEngineer se1 = new SoftwareEngineer();
@@ -72,6 +77,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Should return an empty list")
     void getAllSoftwareEngineersTest_EmptyList() {
         // Given
         when(softwareEngineerRepository.findAll()).thenReturn(Arrays.asList());
@@ -85,6 +91,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Should insert a new software engineer")
     void insertSoftwareEngineerTest() {
         // Given
         SoftwareEngineer se = new SoftwareEngineer();
@@ -111,6 +118,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Should handle null tech stack in insert")
     void insertSoftwareEngineerTest_NullTechStack() {
         // Given
         SoftwareEngineer se = new SoftwareEngineer();
@@ -137,6 +145,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Should retrieve a software engineer by ID")
     void getSoftwareEngineerByIdTest() {
         // Given
         Integer id = 1;
@@ -150,6 +159,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Should throw exception when software engineer not found by ID")
     void getSoftwareEngineerByIdTest_NotFound() {
         // Given
         Integer id = 999;
@@ -166,6 +176,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Should delete a software engineer by ID")
     void deleteSoftwareEngineerByIdTest() {
         // Given
         Integer id = 1;
@@ -180,6 +191,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Should throw exception when trying to delete non-existing software engineer by ID")
     void deleteSoftwareEngineerById_NotFound() {
         // Given
         Integer id = 999;
@@ -197,6 +209,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Should update a software engineer")
     void updateSoftwareEngineerTest() {
       // Given
       Integer id = 1;
@@ -218,6 +231,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Should throw exception when trying to update non-existing software engineer by ID")
     void updateSoftwareEngineerTest_NotFound() {
         // Given
         Integer id = 999;
@@ -239,6 +253,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Should update software engineer with null values")
     void updateSoftwareEngineerTest_NullValues () {
         // Given
         Integer id = 1;
@@ -260,6 +275,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Constructor should initialize service correctly")
     void testConstructor() {
         // Given
         SoftwareEngineerRepository repository = mock(SoftwareEngineerRepository.class);
@@ -273,6 +289,7 @@ public class SoftwareEngineerServiceTests {
     }
 
     @Test
+    @DisplayName("Should insert software engineer and handle AI service response")
     void insertSoftwareEngineerTest_AIServiceThrowsException() {
         // Given
         SoftwareEngineer se = new SoftwareEngineer();
@@ -290,6 +307,57 @@ public class SoftwareEngineerServiceTests {
         assertEquals("AI service error", exception.getMessage());
         verify(aiService, times(1)).chat(anyString());
         verify(softwareEngineerRepository, never()).save(any(SoftwareEngineer.class));
+    }
+
+    @Test
+    @DisplayName("Should insert software engineer and verify AI prompt format")
+    void insertSoftwareEngineerTest_VerifyAIPromptFormat() {
+        // Given
+        SoftwareEngineer se = new SoftwareEngineer();
+        se.setName("Alice Johnson");
+        se.setTechStack("React, Node.js, MongoDB");
+
+        String expectedAIResponse = "Learn TypeScript and advanced React patterns";
+        when(aiService.chat(anyString())).thenReturn(expectedAIResponse);
+        
+        // When
+        softwareEngineerService.insertSoftwareEngineer(se);
+
+        // Then
+        ArgumentCaptor<String> promptCaptor = ArgumentCaptor.forClass(String.class);
+        verify(aiService, times(1)).chat(promptCaptor.capture());
+
+        String capturedPrompt = promptCaptor.getValue();
+        
+        // More specific prompt validation
+        assertAll(
+            () -> assertTrue(capturedPrompt.contains("Alice Johnson"), "Prompt should contain engineer name"),
+            () -> assertTrue(capturedPrompt.contains("React, Node.js, MongoDB"), "Prompt should contain tech stack"),
+            () -> assertTrue(capturedPrompt.toLowerCase().contains("learning path"), "Prompt should mention learning path"),
+            () -> assertTrue(capturedPrompt.toLowerCase().contains("recommendation"), "Prompt should mention recommendation")
+        );
+
+        assertEquals(expectedAIResponse, se.getLearningPathRecommendation());
+        verify(softwareEngineerRepository, times(1)).save(se);
+    }
+
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
+    @DisplayName("Should insert software engineer with timeout")
+    void insertSoftwareEngineerTest_WithTimeout() {
+        // Given
+        SoftwareEngineer se = new SoftwareEngineer();
+        se.setName("Test Engineer");
+        se.setTechStack("Java, Spring");
+
+        when(aiService.chat(anyString())).thenReturn("Learn advanced concepts");
+        
+        // When
+        softwareEngineerService.insertSoftwareEngineer(se);
+
+        // Then
+        verify(aiService, times(1)).chat(anyString());
+        verify(softwareEngineerRepository, times(1)).save(se);
     }
 
 }
