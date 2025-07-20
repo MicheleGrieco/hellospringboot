@@ -2,21 +2,28 @@ package com.example.hellospringboot;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SoftwareEngineerService {
     private final SoftwareEngineerRepository softwareEngineerRepository;
     private final AIService aiService;
+    private final PayrollRecordRepository payrollRecordRepository;
 
     /**
      * Constructor for SoftwareEngineerService.
      * 
      * @param softwareEngineerRepository
      */
-    public SoftwareEngineerService(SoftwareEngineerRepository softwareEngineerRepository, AIService aiService) {
+    @Autowired
+    public SoftwareEngineerService(
+        SoftwareEngineerRepository softwareEngineerRepository,
+        AIService aiService,
+        PayrollRecordRepository payrollRecordRepository) {
         this.softwareEngineerRepository = softwareEngineerRepository;
         this.aiService = aiService;
+        this.payrollRecordRepository = payrollRecordRepository;
     }
 
     /**
@@ -101,5 +108,32 @@ public class SoftwareEngineerService {
                                                         &&
                                                         softwareEngineer.getSalary() > salaryThreshold)
                                             .toList();
+    }
+
+    /**
+     * Calculates the net salary after applying a tax percentage to the gross salary.
+     * 
+     * @param gross the gross salary
+     * @param taxPercentage the tax percentage to be applied
+     * @return the net salary after tax deduction
+     */
+    public Float netSalary(Float gross, Float taxPercentage) {
+        if (gross == null || taxPercentage == null) return null;
+        return gross - (gross * taxPercentage / 100); 
+    }
+
+    public PayrollRecord createPayrollRecord(Integer engineerId, Float taxPercentage) {
+        SoftwareEngineer engineer = getSoftwareEngineerById(engineerId);
+        Float grossSalary = engineer.getSalary();
+        Float taxes = grossSalary * taxPercentage / 100;
+        Float netSalary = netSalary(grossSalary, taxPercentage);
+
+        PayrollRecord record = new PayrollRecord();
+        record.setEngineerId(engineerId);
+        record.setGrossSalary(grossSalary);
+        record.setTaxes(taxes);
+        record.setNetSalary(netSalary);
+        record.setPaymentDate(java.time.LocalDate.now());
+        return payrollRecordRepository.save(record);
     }
 }
