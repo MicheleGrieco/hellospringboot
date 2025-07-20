@@ -26,7 +26,6 @@ class SoftwareEngineerControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @Deprecated
     @MockBean
     private SoftwareEngineerService softwareEngineerService;
 
