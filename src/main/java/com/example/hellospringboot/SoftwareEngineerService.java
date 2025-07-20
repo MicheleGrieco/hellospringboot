@@ -86,4 +86,17 @@ public class SoftwareEngineerService {
         softwareEngineer.setSalary(update.getSalary());
         softwareEngineerRepository.save(softwareEngineer);
     }
+
+    /**
+     * Retrieves software engineers with a salary above a specified threshold.
+     * 
+     * @param salaryThreshold the salary threshold
+     * @return a list of SoftwareEngineer objects with salaries above the threshold
+     */
+    public List<SoftwareEngineer> getEngineersWithSalaryAbove(Float salaryThreshold) {
+        return softwareEngineerRepository.findAll()
+                                            .stream()
+                                            .filter(se -> se.getSalary() != null && se.getSalary() > salaryThreshold)
+                                            .toList();
+    }
 }

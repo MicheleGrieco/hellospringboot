@@ -49,6 +49,7 @@ class SoftwareEngineerServiceTests {
         testEngineer.setId(1);
         testEngineer.setName("John Doe");
         testEngineer.setTechStack("Java, Spring Boot, PostgreSQL");
+        testEngineer.setSalary(Float.valueOf(75000));
         testEngineer.setLearningPathRecommendation("Learn advanced Spring features");
     }
 
@@ -360,4 +361,28 @@ class SoftwareEngineerServiceTests {
         verify(softwareEngineerRepository, times(1)).save(se);
     }
 
+    @Test
+    @DisplayName("Should retrieve software engineers who earn above a certain salary")
+    void getSoftwareEngineerBySalaryTest() {
+        // Given
+        Float salaryThreshold = 70000.0f;
+        SoftwareEngineer se1 = new SoftwareEngineer();
+        se1.setId(1);
+        se1.setSalary(Float.valueOf(80000));
+        
+        SoftwareEngineer se2 = new SoftwareEngineer();
+        se2.setId(2);
+        se2.setSalary(Float.valueOf(60000));
+        
+        List<SoftwareEngineer> engineers = Arrays.asList(se1, se2);
+        
+        when(softwareEngineerRepository.findAll()).thenReturn(engineers);
+
+        // When
+        List<SoftwareEngineer> result = softwareEngineerService.getEngineersWithSalaryAbove(salaryThreshold);
+
+        // Then
+        assertEquals(1, result.size());
+        assertEquals(80000f, result.get(0).getSalary());
+    }
 }
