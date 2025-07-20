@@ -83,6 +83,7 @@ public class SoftwareEngineerService {
         ));
         softwareEngineer.setName(update.getName());
         softwareEngineer.setTechStack(update.getTechStack());
+        softwareEngineer.setSalary(update.getSalary());
         softwareEngineerRepository.save(softwareEngineer);
     }
 }
