@@ -96,7 +96,10 @@ public class SoftwareEngineerService {
     public List<SoftwareEngineer> getEngineersWithSalaryAbove(Float salaryThreshold) {
         return softwareEngineerRepository.findAll()
                                             .stream()
-                                            .filter(se -> se.getSalary() != null && se.getSalary() > salaryThreshold)
+                                            .filter(softwareEngineer ->
+                                                        softwareEngineer.getSalary() != null
+                                                        &&
+                                                        softwareEngineer.getSalary() > salaryThreshold)
                                             .toList();
     }
 }
