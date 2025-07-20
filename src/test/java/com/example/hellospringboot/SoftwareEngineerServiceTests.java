@@ -283,7 +283,7 @@ class SoftwareEngineerServiceTests {
         AIService mockAiService = mock(AIService.class);
 
         // When
-        SoftwareEngineerService service = new SoftwareEngineerService(repository, mockAiService);
+        SoftwareEngineerService service = new SoftwareEngineerService(repository, mockAiService, null);
 
         // Then
         assertNotNull(service);
