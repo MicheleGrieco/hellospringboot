@@ -1,4 +1,4 @@
-package com.example.hellospringboot.exception;
+package com.example.hellospringboot.exceptions;
 
 
 public class EntityNotFoundException extends RuntimeException {
